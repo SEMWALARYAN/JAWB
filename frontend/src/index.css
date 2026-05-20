@@ -1,0 +1,121 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Comic+Neue:wght@400;700&family=Caveat:wght@400;700&display=swap');
+
+@theme {
+  --color-primary-50: #fff9db;
+  --color-primary-100: #fff3bf;
+  --color-primary-500: #ffde00;
+  --color-primary-600: #f5c400;
+  --color-primary-700: #e5ab00;
+  --color-background: #fffdf9;
+  --color-surface: #ffffff;
+  
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-comic: 'Comic Neue', cursive;
+  --font-hand: 'Caveat', cursive;
+
+  /* Vibrant Pop Manga Palette */
+  --color-manga-yellow: #ffe53b;
+  --color-manga-orange: #ff5722;
+  --color-manga-cyan: #00e5ff;
+  --color-manga-pink: #ff2e93;
+  --color-manga-purple: #7c4dff;
+  --color-manga-green: #00e676;
+}
+
+@layer base {
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #fffdf9;
+    /* Soft warm grid line design */
+    background-image: 
+      linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: #000000;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Comic Neue', cursive;
+  }
+}
+
+.font-comic {
+  font-family: 'Comic Neue', cursive;
+  font-weight: 700;
+}
+
+.font-hand {
+  font-family: 'Caveat', cursive;
+}
+
+/* Premium Manga Panels with custom shadows */
+.glass-panel {
+  background: white;
+  border: 3px solid black;
+  box-shadow: 6px 6px 0px 0px #000000;
+  color: black;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-panel * {
+  border-color: black;
+}
+
+.glass-panel-yellow {
+  background: #ffe53b;
+  border: 3px solid black;
+  box-shadow: 6px 6px 0px 0px #000000;
+  color: black;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-panel-cyan {
+  background: #00e5ff;
+  border: 3px solid black;
+  box-shadow: 6px 6px 0px 0px #000000;
+  color: black;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-panel-pink {
+  background: #ff2e93;
+  border: 3px solid black;
+  box-shadow: 6px 6px 0px 0px #000000;
+  color: white;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-panel-orange {
+  background: #ff5722;
+  border: 3px solid black;
+  box-shadow: 6px 6px 0px 0px #000000;
+  color: white;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-panel-purple {
+  background: #7c4dff;
+  border: 3px solid black;
+  box-shadow: 6px 6px 0px 0px #000000;
+  color: white;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-input {
+  background: white;
+  border: 2.5px solid black;
+  color: black;
+  box-shadow: 3px 3px 0px black;
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  border-color: black;
+  box-shadow: 5px 5px 0px black;
+  outline: none;
+}
+
