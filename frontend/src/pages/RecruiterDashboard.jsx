@@ -363,6 +363,16 @@ export default function RecruiterDashboard() {
                                 ))}
                               </div>
                             )}
+                            {app.interview && app.status === 'Interview Scheduled' && (
+                              <div className="mt-3 text-xs bg-manga-orange/10 border-2 border-black p-2 shadow-[2px_2px_0_0_#000] inline-block">
+                                <span className="font-black text-black">Interview:</span> {new Date(app.interview.date).toLocaleDateString()} at {app.interview.time}
+                                {app.interview.link && (
+                                  <span className="ml-2 border-l-2 border-black pl-2">
+                                    <a href={app.interview.link} target="_blank" rel="noreferrer" className="text-black font-extrabold underline decoration-2 decoration-manga-cyan hover:text-manga-cyan">Meeting Link</a>
+                                  </span>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                         
@@ -381,7 +391,14 @@ export default function RecruiterDashboard() {
                           <div className="flex items-center gap-2">
                             <select 
                               value={app.status} 
-                              onChange={(e) => updateApplicationStatus(app._id, e.target.value)}
+                              onChange={(e) => {
+                                const newStatus = e.target.value;
+                                if (newStatus === 'Interview Scheduled') {
+                                  setScheduleInterview(app);
+                                } else {
+                                  updateApplicationStatus(app._id, newStatus);
+                                }
+                              }}
                               className={`text-xs font-black uppercase px-3 py-2.5 rounded-none border-2 border-black focus:outline-none shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer appearance-none pr-8 bg-no-repeat bg-[right_0.5rem_center] bg-[length:1em_1em] ${
                                 app.status === 'Applied' ? 'bg-manga-cyan text-black' :
                                 app.status === 'Shortlisted' ? 'bg-manga-yellow text-black' :
@@ -397,9 +414,9 @@ export default function RecruiterDashboard() {
                               <option value="Rejected">Rejected</option>
                             </select>
                             
-                            {app.status === 'Shortlisted' && (
+                            {(app.status === 'Shortlisted' || app.status === 'Interview Scheduled') && (
                               <button onClick={() => setScheduleInterview(app)} className="text-xs bg-white text-black border-2 border-black px-4 py-2.5 rounded-none font-black uppercase hover:bg-manga-purple hover:text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] flex items-center gap-1.5 hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
-                                <Calendar size={14}/> Schedule
+                                <Calendar size={14}/> {app.status === 'Interview Scheduled' ? 'Reschedule' : 'Schedule'}
                               </button>
                             )}
                           </div>

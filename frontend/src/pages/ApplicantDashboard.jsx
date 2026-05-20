@@ -13,6 +13,13 @@ export default function ApplicantDashboard() {
   
   const [activeTab, setActiveTab] = useState('jobs'); // 'jobs' | 'applications'
   const [searchQuery, setSearchQuery] = useState('');
+  const [dismissedNotifs, setDismissedNotifs] = useState(() => JSON.parse(localStorage.getItem('dismissedNotifs')) || []);
+
+  const handleDismissNotif = (key) => {
+    const updated = [...dismissedNotifs, key];
+    setDismissedNotifs(updated);
+    localStorage.setItem('dismissedNotifs', JSON.stringify(updated));
+  };
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
@@ -222,30 +229,60 @@ export default function ApplicantDashboard() {
         </div>
       )}
 
-      {/* Shortlist Notification Banner */}
-      {myApplications.filter(app => app.status === 'Shortlisted').map(app => (
-        <div key={`shortlist-notif-${app._id}`} className="mb-6 bg-manga-yellow border-3 border-black rounded-none p-5 flex flex-col md:flex-row gap-5 items-center justify-between shadow-[6px_6px_0_0_rgba(0,0,0,1)] relative overflow-hidden bg-[linear-gradient(45deg,#ffe53b_25%,transparent_25%),linear-gradient(-45deg,#ffe53b_25%,transparent_25%)] bg-[size:10px_10px]">
-          <div className="absolute inset-0 bg-[#fffdf5]/90 z-0"></div>
-          <div className="relative z-10 flex flex-col sm:flex-row gap-4 items-center text-center sm:text-left w-full">
-            <div className="w-20 h-20 bg-white border-2 border-black rounded-none overflow-hidden shadow-[3px_3px_0_0_#000] flex-shrink-0">
-              <img src="https://media1.tenor.com/m/PDVHdZ0XYJoAAAAC/cat-shield.gif" alt="Shortlisted Notification" className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1">
-              <span className="bg-black text-white font-black text-[9px] tracking-widest uppercase px-2 py-0.5 border border-black shadow-[2px_2px_0_0_#ffe53b] inline-block mb-1">New Notification</span>
-              <h3 className="text-xl font-black text-black uppercase tracking-tight leading-tight">Shortlisted by Recruiter!</h3>
-              <p className="text-sm font-bold text-gray-800 mt-1">Excellent news! You have been shortlisted for <span className="underline decoration-2 decoration-manga-pink font-black text-black">{app.job?.title}</span> at <span className="font-extrabold text-black">{app.job?.companyName}</span>!</p>
-            </div>
-            <div className="flex gap-2 justify-end mt-4 sm:mt-0">
+      {/* Notifications Banner */}
+      {myApplications
+        .filter(app => ['Shortlisted', 'Interview Scheduled', 'Hired', 'Rejected'].includes(app.status))
+        .filter(app => !dismissedNotifs.includes(`${app._id}-${app.status}`))
+        .map(app => {
+          let title, msg, img;
+          if (app.status === 'Shortlisted') {
+            title = "Shortlisted by Recruiter!";
+            msg = <>Excellent news! You have been shortlisted for <span className="underline decoration-2 decoration-manga-pink font-black text-black">{app.job?.title}</span> at <span className="font-extrabold text-black">{app.job?.companyName}</span>!</>;
+            img = "https://media1.tenor.com/m/PDVHdZ0XYJoAAAAC/cat-shield.gif";
+          } else if (app.status === 'Interview Scheduled') {
+            title = "Interview Scheduled!";
+            msg = <>You have an interview scheduled for <span className="underline decoration-2 decoration-manga-orange font-black text-black">{app.job?.title}</span> at <span className="font-extrabold text-black">{app.job?.companyName}</span>! {app.interview?.date && `Date: ${new Date(app.interview.date).toLocaleDateString()} Time: ${app.interview.time}`}</>;
+            img = "https://media1.tenor.com/m/wUv4TBeeuZoAAAAC/cat-huh.gif";
+          } else if (app.status === 'Hired') {
+            title = "Congratulations! You are Hired!";
+            msg = <>The team at <span className="font-extrabold text-black">{app.job?.companyName}</span> is thrilled to welcome you for the <span className="underline decoration-2 decoration-manga-green font-black text-black">{app.job?.title}</span> role!</>;
+            img = "https://media1.tenor.com/m/YaCjau306ZYAAAAC/jgmm-cat-meme.gif";
+          } else if (app.status === 'Rejected') {
+            title = "Application Update";
+            msg = <>Unfortunately, your application for <span className="underline decoration-2 decoration-manga-pink font-black text-black">{app.job?.title}</span> at <span className="font-extrabold text-black">{app.job?.companyName}</span> was not successful this time.</>;
+            img = "https://media1.tenor.com/m/ZXPCRT8wKXgAAAAC/cat-scuba-cat.gif";
+          }
+
+          return (
+            <div key={`notif-${app._id}-${app.status}`} className="mb-6 bg-manga-yellow border-3 border-black rounded-none p-5 flex flex-col md:flex-row gap-5 items-center justify-between shadow-[6px_6px_0_0_rgba(0,0,0,1)] relative overflow-hidden bg-[linear-gradient(45deg,#ffe53b_25%,transparent_25%),linear-gradient(-45deg,#ffe53b_25%,transparent_25%)] bg-[size:10px_10px]">
+              <div className="absolute inset-0 bg-[#fffdf5]/90 z-0"></div>
               <button 
-                onClick={() => setActiveChat(app)}
-                className="px-4 py-2.5 bg-manga-cyan border-2 border-black text-black font-black uppercase text-xs shadow-[3px_3px_0_0_#000] hover:bg-white hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] transition-all"
+                onClick={() => handleDismissNotif(`${app._id}-${app.status}`)} 
+                className="absolute top-3 right-3 text-black font-black text-xl leading-none hover:text-red-600 z-20 hover:scale-110 transition-transform"
               >
-                Chat Recruiter
+                ✕
               </button>
+              <div className="relative z-10 flex flex-col sm:flex-row gap-4 items-center text-center sm:text-left w-full">
+                <div className="w-20 h-20 bg-white border-2 border-black rounded-none overflow-hidden shadow-[3px_3px_0_0_#000] flex-shrink-0">
+                  <img src={img} alt="Notification" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 pr-6">
+                  <span className="bg-black text-white font-black text-[9px] tracking-widest uppercase px-2 py-0.5 border border-black shadow-[2px_2px_0_0_#ffe53b] inline-block mb-1">New Notification</span>
+                  <h3 className="text-xl font-black text-black uppercase tracking-tight leading-tight">{title}</h3>
+                  <p className="text-sm font-bold text-gray-800 mt-1">{msg}</p>
+                </div>
+                <div className="flex gap-2 justify-end mt-4 sm:mt-0">
+                  <button 
+                    onClick={() => setActiveChat(app)}
+                    className="px-4 py-2.5 bg-manga-cyan border-2 border-black text-black font-black uppercase text-xs shadow-[3px_3px_0_0_#000] hover:bg-white hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] transition-all"
+                  >
+                    Chat Recruiter
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      ))}
+          );
+        })}
 
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-black tracking-tight">Welcome, {user?.name}</h1>
