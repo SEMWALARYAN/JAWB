@@ -1,4 +1,4 @@
-# JAWB - Pop-Manga Job Portal
+# JAWB - Job Portal
 
 JAWB is a full-stack job portal web application that features a unique, vibrant, high-contrast pop-manga aesthetic. It provides a complete workflow for both **Applicants** and **Recruiters** with dedicated dashboards, real-time application tracking, chat functionalities, and engaging animations.
 
